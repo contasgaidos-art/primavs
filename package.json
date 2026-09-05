@@ -1,0 +1,102 @@
+{
+  "name": "prisma-virtual-sound",
+  "version": "1.0.0",
+  "description": "PRISMA Virtual Sound — editor multipista com controle remoto por WiFi (sem Python).",
+  "author": "PRISMA",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:portable": "electron-builder --win portable",
+    "dist:zip": "electron-builder --win zip",
+    "dist:1clique": "electron-builder --win nsis -c.nsis.oneClick=true -c.nsis.perMachine=false -c.nsis.runAfterFinish=false -c.nsis.allowToChangeInstallationDirectory=false",
+    "dist:mac": "electron-builder --mac -c.mac.identity=null",
+    "dist:mac:assinado": "electron-builder --mac -c.mac.notarize=true"
+  },
+  "devDependencies": {
+    "electron": "^31.7.6",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.prisma.virtualsound",
+    "productName": "PRISMA Virtual Sound",
+    "files": [
+      "main.js",
+      "preload.js",
+      "server.js",
+      "www/**/*",
+      "!www/pads/**/*.mp3",
+      "!www/pads/**/*.wav",
+      "!www/pads/**/*.ogg",
+      "!www/pads/**/*.m4a",
+      "!www/pads/**/*.flac"
+    ],
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://SEUDOMINIO.com.br/updates/"
+      }
+    ],
+    "compression": "normal",
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "mac": {
+      "category": "public.app-category.music",
+      "icon": "build/icon.png",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "dmg": {
+      "title": "PRISMA Virtual Sound",
+      "contents": [
+        {
+          "x": 140,
+          "y": 200
+        },
+        {
+          "x": 400,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PRISMA Virtual Sound",
+      "differentialPackage": false,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": false,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "installerHeader": "build/installerHeader.bmp",
+      "installerSidebar": "build/installerSidebar.bmp",
+      "uninstallerSidebar": "build/uninstallerSidebar.bmp",
+      "license": "build/license.txt",
+      "language": "1046"
+    }
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9",
+    "node-machine-id": "^1.1.12",
+    "qrcode": "^1.5.4",
+    "ws": "^8.21.1"
+  }
+}

@@ -1,0 +1,46 @@
+==================================================================
+   PRISMA - GERAR O APP DO MAC (.dmg)
+==================================================================
+
+Este projeto ja esta pronto. Ele gera o PRISMA para Mac SEM assinatura
+Apple (abre com botao direito > Abrir). Precisa ser rodado num MAC.
+
+Voce tem 2 caminhos:
+
+------------------------------------------------------------------
+CAMINHO A - Num Mac de verdade (ou Mac alugado na nuvem)
+------------------------------------------------------------------
+1) Copie esta pasta para o Mac.
+2) Instale o Node.js no Mac (https://nodejs.org - botao LTS).
+3) De dois cliques em "GERAR-APP-MAC.command".
+   - Se aparecer aviso de seguranca: clique com o botao DIREITO
+     no arquivo > Abrir > Abrir.
+   - Se pedir, no Terminal rode antes:  chmod +x GERAR-APP-MAC.command
+4) Espere. No fim abre a pasta "dist" com o PRISMA Virtual Sound.dmg.
+   Esse .dmg e o instalador do Mac (mande para o cliente ou ponha no site).
+
+Servicos de "Mac na nuvem" (aluga por hora/mes): MacinCloud, MacStadium.
+
+------------------------------------------------------------------
+CAMINHO B - Na nuvem de graca (GitHub Actions) - NAO precisa de Mac
+------------------------------------------------------------------
+1) Crie uma conta no https://github.com (gratis).
+2) Crie um repositorio novo e suba esta pasta inteira
+   (inclusive a pasta .github que ja vem pronta).
+3) No repositorio: aba "Actions" > escolha "Gerar app do Mac (PRISMA)"
+   > botao "Run workflow".
+4) Quando terminar (uns minutos), baixe o resultado em "Artifacts":
+   PRISMA-Virtual-Sound-Mac (contem o .dmg).
+
+Esse caminho roda num Mac da nuvem do GitHub, de graca, sem voce ter Mac.
+
+------------------------------------------------------------------
+DEPOIS
+------------------------------------------------------------------
+- O .dmg do Mac voce distribui como o Windows: poe na pasta download
+  do site (ex.: download/prisma-virtual-sound-mac.dmg) e liga o botao
+  "Baixar para Mac".
+- Sem conta Apple (US$ 99/ano), o Mac mostra um aviso na 1a vez:
+  o cliente clica com o BOTAO DIREITO no app > Abrir. So na 1a vez.
+- O mesmo serial funciona no Mac tambem.
+==================================================================
