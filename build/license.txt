@@ -1,0 +1,16 @@
+PRISMA Virtual Sound
+Termos de uso
+
+Este programa e fornecido para uso do proprio usuario (musicos, equipes de
+louvor e produtores) para tocar, editar e controlar suas proprias faixas de
+audio (stems), incluindo o controle remoto por rede WiFi local.
+
+- Voce pode instalar e usar o PRISMA nos seus computadores.
+- O audio reproduzido e de responsabilidade do usuario (use apenas
+  conteudo que voce tem direito de utilizar).
+- O software e fornecido "como esta", sem garantias. O autor nao se
+  responsabiliza por eventuais perdas decorrentes do uso.
+
+Ao instalar, voce concorda com estes termos.
+
+(c) PRISMA Virtual Sound

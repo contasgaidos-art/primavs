@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>PRISMA · Remoto</title>
+<style>
+  :root{--bg:#14171c;--panel:#1c2129;--panel2:#232a34;--edge:#2f3846;--txt:#e6eaf0;--dim:#8b95a6;
+        --accent:#4fd48a;--accent2:#4c9bff;--amber:#e0a832;--red:#e0574a;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+  #app{display:flex;flex-direction:column;height:100%}
+  .top{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0f1216;border-bottom:1px solid var(--edge)}
+  .top .logo{font-weight:800;letter-spacing:1px}
+  .top .logo small{color:var(--accent);font-weight:600;letter-spacing:2px;font-size:10px}
+  .top .dot{width:10px;height:10px;border-radius:50%;background:var(--red);margin-left:10px;box-shadow:0 0 6px currentColor}
+  .top .dot.ok{background:var(--accent)}
+  .top .st{font-size:11px;color:var(--dim)}
+  .top .play{margin-left:auto;height:34px;min-width:104px;padding:0 16px;border-radius:9px;border:1px solid transparent;background:var(--accent);color:#06170e;font-size:14px;font-weight:800;cursor:pointer}
+  .top .play.on{background:var(--amber)}
+  /* barra de abas EM CIMA (cabe em qualquer celular) */
+  .tabs{display:flex;gap:6px;padding:6px 8px;background:#0f1216;border-bottom:1px solid var(--edge);overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tabs button{flex:1 1 auto;min-width:78px;height:42px;border-radius:10px;border:1px solid var(--edge);background:var(--panel);color:var(--txt);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;padding:0 8px}
+  .tabs button.on{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#06170e;border-color:transparent}
+  .tabs .play{flex:0 0 auto;min-width:96px;background:var(--accent);color:#06170e;border-color:transparent;font-weight:800}
+  .tabs .play.on{background:var(--amber)}
+  .body{flex:1;display:flex;min-height:0}
+  .main{flex:1;min-width:0;overflow:auto;padding:10px}
+
+  /* faixas de volume */
+  .faders{display:flex;gap:8px;height:100%;align-items:stretch}
+  .fstrip{width:72px;min-width:72px;background:var(--panel);border:1px solid var(--edge);border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px}
+  .fstrip.master{background:#282412;border-color:#5e5220}
+  .fstrip .nm{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;max-width:64px;text-align:center}
+  .fstrip.master .nm{color:#f2c94c}
+  .fstrip .mute{width:100%;height:26px;border-radius:6px;border:1px solid var(--edge);background:#241014;color:#e88;font-size:11px;font-weight:800;cursor:pointer}
+  .fstrip .mute.on{background:var(--red);color:#fff;border-color:var(--red)}
+  .fstrip .fwrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+  .fstrip input[type=range]{writing-mode:vertical-lr;direction:rtl;-webkit-appearance:slider-vertical;appearance:slider-vertical;width:34px;height:100%;margin:0;accent-color:var(--accent);cursor:ns-resize}
+  .fstrip.master input[type=range]{accent-color:#f2c94c}
+  .fstrip .val{font-size:10px;color:var(--dim);font-family:monospace}
+
+  /* pads */
+  .padwrap{display:flex;gap:12px;height:100%}
+  .padvol{display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px}
+  .padvol input[type=range]{writing-mode:vertical-lr;direction:rtl;-webkit-appearance:slider-vertical;appearance:slider-vertical;width:34px;height:100%;margin:0;accent-color:var(--accent)}
+  .padvol .lbl{font-size:11px;color:var(--dim)}
+  .padgrid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-content:center}
+  .padbtn{height:64px;border-radius:12px;border:1px solid transparent;background:var(--accent);color:#06331f;font-size:18px;font-weight:800;cursor:pointer}
+  .padbtn.on{background:var(--red);color:#fff;box-shadow:0 0 14px rgba(224,87,74,.6)}
+  .padoff{grid-column:span 4;height:44px;border-radius:10px;border:1px solid var(--edge);background:var(--panel);color:var(--dim);font-weight:700;cursor:pointer}
+
+  /* regioes */
+  .regs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;align-content:start}
+  .regbtn{height:70px;border-radius:12px;border:1px solid var(--edge);background:var(--panel2);color:var(--txt);font-size:16px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+  .regbtn:active{background:var(--accent);color:#06170e}
+  .regbtn small{font-size:11px;color:var(--dim);font-weight:600}
+  .empty{color:var(--dim);font-size:14px;padding:20px;text-align:center}
+
+  /* musicas do culto */
+  .songs{display:flex;flex-direction:column;gap:10px;align-content:start}
+  .songbtn{min-height:60px;border-radius:12px;border:1px solid var(--edge);background:var(--panel2);color:var(--txt);font-size:17px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:12px;padding:10px 14px;text-align:left}
+  .songbtn .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:#0f1216;border:1px solid var(--edge);color:var(--dim);font-size:13px;display:flex;align-items:center;justify-content:center}
+  .songbtn.on{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#06170e;border-color:transparent}
+  .songbtn.on .num{background:#06170e;color:var(--accent);border-color:transparent}
+  .songbtn .now{margin-left:auto;font-size:11px;font-weight:700;color:#06170e;background:rgba(255,255,255,.6);border-radius:20px;padding:2px 8px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top">
+    <div class="logo">PRISMA <small>REMOTO</small></div>
+    <div class="st" id="statusTxt">conectando…</div>
+    <button id="rPlay" class="play">▶︎ Tocar</button>
+    <div class="dot" id="dot"></div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button data-bank="song">🎵 Músicas</button>
+    <button data-bank="vol" class="on">🎚️ Volumes</button>
+    <button data-bank="pad">🎹 Pads</button>
+    <button data-bank="reg">🚩 Regiões</button>
+  </div>
+  <div class="body">
+    <div class="main" id="main"></div>
+  </div>
+</div>
+<script>
+(function(){
+  const $=s=>document.querySelector(s);
+  const base=location.origin;
+  let bank="vol", state=null, dragging=new Set(), sig="";
+  let lastSend=0, ws=null, wsOpen=false;
+  function send(c){ if(ws&&ws.readyState===1){ try{ ws.send(JSON.stringify({kind:"cmd",cmd:c})); }catch(e){} } else { try{ fetch(base+"/cmd",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(c),keepalive:true}); }catch(e){} } }
+  function sendThrottled(c){ const now=Date.now(); if(now-lastSend<45)return; lastSend=now; send(c); }
+  function setConn(ok){ document.querySelector("#dot").classList.toggle("ok",ok); document.querySelector("#statusTxt").textContent=ok?"conectado":"sem conexão"; }
+  function connectWS(){
+    try{ const proto=location.protocol==="https:"?"wss:":"ws:"; ws=new WebSocket(proto+"//"+location.host+"/ws?role=remote");
+      ws.onopen=()=>{ wsOpen=true; setConn(true); };
+      ws.onmessage=e=>{ try{ const m=JSON.parse(e.data); if(m.kind==="state"){ state=m.state; setConn(true); render(); } }catch(_){} };
+      ws.onclose=()=>{ wsOpen=false; ws=null; setConn(false); setTimeout(connectWS,1500); };
+      ws.onerror=()=>{};
+    }catch(e){}
+  }
+
+  document.querySelectorAll("#tabs [data-bank]").forEach(b=>b.onclick=()=>{
+    bank=b.dataset.bank;
+    document.querySelectorAll("#tabs [data-bank]").forEach(x=>x.classList.toggle("on",x===b));
+    sig=""; render();
+  });
+  $("#rPlay").onclick=()=>{ send({type:"play"}); };
+
+  async function pull(){
+    if(wsOpen) return;   // com WebSocket, o estado chega sozinho
+    try{ const r=await fetch(base+"/state",{cache:"no-store"}); state=await r.json(); setConn(true); render(); }
+    catch(e){ setConn(false); }
+  }
+
+  function structSig(){
+    if(!state) return "x";
+    if(bank==="song") return "song|"+((state.songs)||[]).join(",")+"|"+state.songIdx;
+    if(bank==="vol") return "vol|"+(state.tracks||[]).map(t=>t.name).join(",");
+    if(bank==="pad") return "pad|"+((state.pad&&state.pad.notes)||[]).join(",");
+    if(bank==="reg") return "reg|"+(state.regions||[]).map(r=>r.name+"@"+r.a.toFixed(2)).join(",");
+    return bank;
+  }
+
+  function render(){
+    if(!state){ return; }
+    $("#rPlay").classList.toggle("on", !!state.playing);
+    $("#rPlay").innerHTML = state.playing ? "⏸ Pausar" : "▶︎ Tocar";
+    const ns=structSig();
+    if(ns!==sig){ sig=ns; build(); }
+    else { refresh(); }
+  }
+
+  function build(){
+    const m=$("#main"); m.innerHTML="";
+    if(bank==="song"){
+      const songs=state.songs||[];
+      if(!songs.length){ m.innerHTML='<div class="empty">Nenhuma música no culto.<br>No PC, use "+ Adicionar ao culto".</div>'; return; }
+      const g=document.createElement("div"); g.className="songs";
+      songs.forEach((nm,i)=>{ const b=document.createElement("button"); b.className="songbtn"+(i===state.songIdx?" on":""); b.dataset.i=i;
+        b.innerHTML='<span class="num">'+(i+1)+'</span><span>'+nm+'</span>'+(i===state.songIdx?'<span class="now">TOCANDO</span>':'');
+        b.onclick=()=>send({type:"song",i:i}); g.appendChild(b); });
+      m.appendChild(g); refresh(); return;
+    }
+    if(bank==="vol"){
+      const wrap=document.createElement("div"); wrap.className="faders";
+      // MASTER
+      wrap.appendChild(fader("master","MASTER", state.master, -1));
+      (state.tracks||[]).forEach((t,i)=> wrap.appendChild(fader("", t.name, t.vol, i, t.mute)));
+      if(!(state.tracks||[]).length){ m.innerHTML='<div class="empty">Abra uma música no PC para ver as pistas.</div>'; return; }
+      m.appendChild(wrap);
+    }
+    else if(bank==="pad"){
+      const notes=(state.pad&&state.pad.notes)||["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+      const wrap=document.createElement("div"); wrap.className="padwrap";
+      const pv=document.createElement("div"); pv.className="padvol";
+      pv.innerHTML='<div class="lbl">Vol</div>';
+      const pf=document.createElement("input"); pf.type="range"; pf.min=0; pf.max=100; pf.value=Math.round((state.pad.vol||0.6)*100);
+      pf.oninput=e=>sendThrottled({type:"padvol",v:e.target.value/100});
+      pv.appendChild(pf); wrap.appendChild(pv);
+      const grid=document.createElement("div"); grid.className="padgrid";
+      notes.forEach((n,i)=>{ const b=document.createElement("button"); b.className="padbtn"; b.dataset.k=i; b.textContent=n;
+        b.onclick=()=>{ const cur=state.pad&&state.pad.key; send({type:"pad", k: cur===i? null : i}); };
+        grid.appendChild(b); });
+      const off=document.createElement("button"); off.className="padoff"; off.textContent="Desligar pad";
+      off.onclick=()=>send({type:"pad",k:null}); grid.appendChild(off);
+      wrap.appendChild(grid); m.appendChild(wrap);
+    }
+    else if(bank==="reg"){
+      const regs=state.regions||[];
+      if(!regs.length){ m.innerHTML='<div class="empty">Nenhuma região salva nesta música.<br>Crie regiões no PC (2 cliques na régua).</div>'; return; }
+      const g=document.createElement("div"); g.className="regs";
+      regs.forEach(r=>{ const b=document.createElement("button"); b.className="regbtn";
+        b.innerHTML=r.name+"<small>"+fmt(r.a)+"</small>";
+        b.onclick=()=>send({type:"region",a:r.a}); g.appendChild(b); });
+      m.appendChild(g);
+    }
+    refresh();
+  }
+
+  function fader(cls,name,vol,idx,mute){
+    const s=document.createElement("div"); s.className="fstrip"+(cls?" "+cls:"");
+    s.dataset.i=idx;
+    const muteHtml = idx>=0 ? '<button class="mute'+(mute?" on":"")+'">MUTE</button>' : '<div style="height:26px"></div>';
+    s.innerHTML='<div class="nm">'+name+'</div>'+muteHtml+
+      '<div class="fwrap"><input type="range" min="0" max="120" value="'+Math.round((vol||0)*100)+'"></div>'+
+      '<div class="val">'+Math.round((vol||0)*100)+'</div>';
+    const f=s.querySelector("input"), val=s.querySelector(".val");
+    f.addEventListener("pointerdown",()=>dragging.add(idx));
+    const end=()=>dragging.delete(idx);
+    f.addEventListener("pointerup",end); f.addEventListener("pointercancel",end);
+    f.oninput=e=>{ const v=e.target.value/100; val.textContent=e.target.value;
+      if(idx<0) sendThrottled({type:"master",v}); else sendThrottled({type:"vol",i:idx,v}); };
+    const mb=s.querySelector(".mute");
+    if(mb) mb.onclick=()=>{ const on=!mb.classList.contains("on"); mb.classList.toggle("on",on); send({type:"mute",i:idx,on}); };
+    return s;
+  }
+
+  function refresh(){
+    if(!state) return;
+    if(bank==="vol"){
+      document.querySelectorAll(".fstrip").forEach(s=>{
+        const i=parseInt(s.dataset.i);
+        let vol, mute=false;
+        if(i<0){ vol=state.master; } else { const t=(state.tracks||[])[i]; if(!t)return; vol=t.vol; mute=t.mute; }
+        if(!dragging.has(i)){ const f=s.querySelector("input"); f.value=Math.round((vol||0)*100); s.querySelector(".val").textContent=Math.round((vol||0)*100); }
+        const mb=s.querySelector(".mute"); if(mb) mb.classList.toggle("on",!!mute);
+      });
+    } else if(bank==="pad"){
+      const key=state.pad&&state.pad.key;
+      document.querySelectorAll(".padbtn").forEach(b=>b.classList.toggle("on", parseInt(b.dataset.k)===key));
+    }
+  }
+
+  function fmt(s){ s=Math.max(0,s||0); const m=Math.floor(s/60), ss=Math.floor(s%60); return m+":"+(ss<10?"0":"")+ss; }
+
+  connectWS(); pull(); setInterval(pull, 900);
+})();
+</script>
+</body>
+</html>
