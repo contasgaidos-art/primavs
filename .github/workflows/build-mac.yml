@@ -10,7 +10,7 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - run: npm run dist:mac
+      - run: - run: npx electron-builder --mac --universal -c.mac.identity=null
       - uses: actions/upload-artifact@v4
         with:
           name: PRISMA-Virtual-Sound-Mac
